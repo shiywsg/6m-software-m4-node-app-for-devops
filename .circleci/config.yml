@@ -64,15 +64,16 @@ jobs:
             docker push "${IMAGE_TAG}"
 
 workflows:
-  jobs:
-    - compile:
+  simple_workflow:
+    jobs:
+    - compile
     - test:
         requires:
           - compile
-      - build:
-      - push:
-          requires:
-            - build
-          filters:
-            branches:
-              only: main
+    - build
+    - push:
+        requires:
+          - build
+        filters:
+          branches:
+            only: main
