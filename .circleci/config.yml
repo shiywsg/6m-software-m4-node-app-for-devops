@@ -5,13 +5,15 @@ orbs:
 executors:
  docker-publisher: 
  environment:
-    IMAGE_NAME: ndukwearm19docker/docker-node-app
+    IMAGE_NAME: sampleci
+    DOCKERHUB_USERNAME: shiywsg
+    DOCKERHUB_PASSWORD: syw076923
     PORT: 3000
  docker: 
-    — image: circleci/node:latest
+    - image: circleci/node:latest
  auth:
-    username: $shiywsg
-    password: $syw076923  
+    username: $DOCKERHUB_USERNAME
+    password: $DOCKERHUB_PASSWORD  
 jobs:
   build:
     docker:
@@ -38,8 +40,9 @@ jobs:
     steps: 
       executor: docker-publisher
       steps: 
-      — setup_remote_docker
-      — run: 
+      - checkout
+      - setup_remote_docker
+      - run: 
         name: Publish Docker Image to Docker Hub
         command: |
           echo “$DOCKERHUB_PASSWORD” | docker login -u “$DOCKERHUB_USERNAME” — password-stdin
