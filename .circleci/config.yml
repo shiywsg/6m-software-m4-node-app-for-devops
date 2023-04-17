@@ -7,7 +7,7 @@ executors:
     environment:
       IMAGE_TAG: shiywsg/sampleci:latest
       DOCKERHUB_USERNAME: shiywsg
-      DOCKERHUB_PASS: syw076923
+      DOCKERHUB_PASS: dckr_pat_QxMO0rXU42Y9XGdvqw6Rh2GZCLI
     docker:
       - image: docker:stable
 
