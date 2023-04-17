@@ -1,0 +1,59 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.1
+  docker: circleci/docker@1.5.0
+executors:
+ docker-publisher: 
+ environment:
+    IMAGE_NAME: ndukwearm19docker/docker-node-app
+    PORT: 3000
+ docker: 
+    — image: circleci/node:latest
+ auth:
+    username: $shiywsg
+    password: $syw076923  
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout 
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Installing dependencies..."
+          npm install
+  test:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Running tests..."
+          npm run test
+
+  publish: 
+    steps: 
+      executor: docker-publisher
+      steps: 
+      — checkout
+      — setup_remote_docker
+      — run: 
+        name: Publish Docker Image to Docker Hub
+        command: |
+          echo “$DOCKERHUB_PASSWORD” | docker login -u “$DOCKERHUB_USERNAME” — password-stdin
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME:latest
+
+workflows:
+  simple_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - publish:
+          requires:
+            - build      
