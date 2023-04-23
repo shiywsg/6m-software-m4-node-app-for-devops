@@ -88,14 +88,8 @@ workflows:
               main
     - test:
         requires:
-          - build
-        filters:
-          branches:
-            only:
-              main
-    - create
-        tags:
-          only: '*.*.*'
+          - compile
+    - build
     - push:
         requires:
           - build
