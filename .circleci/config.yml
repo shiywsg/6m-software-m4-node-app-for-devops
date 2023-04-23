@@ -3,6 +3,7 @@ orbs:
   node: circleci/node@5.1.0
   docker: circleci/docker@2.2.0
   heroku: circleci/heroku@2.0.0
+  heroku: circleci/heroku@2.0.0
 executors:
   docker-publisher:
     environment:
@@ -82,14 +83,14 @@ workflows:
     jobs:
     - build
         filters:
-          branchers:
+          branches:
             only:
               main
     - test:
         requires:
           - build
         filters:
-          branchers:
+          branches:
             only:
               main
     - create
