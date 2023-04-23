@@ -89,7 +89,9 @@ workflows:
     - test:
         requires:
           - compile
-    - build
+    - create
+        tags:
+          only: '*.*.*'
     - push:
         requires:
           - build
