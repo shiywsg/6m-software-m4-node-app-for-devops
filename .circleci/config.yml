@@ -2,17 +2,18 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.0
   docker: circleci/docker@2.2.0
+  heroku: circleci/heroku@2.0.0
 executors:
   docker-publisher:
     environment:
       IMAGE_TAG: shiywsg/sampleci:latest
       DOCKERHUB_USERNAME: shiywsg
-      DOCKERHUB_PASS: syw076923
+      DOCKERHUB_PASS: dckr_pat_QxMO0rXU42Y9XGdvqw6Rh2GZCLI
     docker:
       - image: docker:stable
 
 jobs:
-  compile: 
+  build: 
     docker:
       - image: cimg/node:16.10
     steps:
@@ -32,7 +33,7 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
-  build:
+  create:
     executor: docker-publisher
     steps:
       - checkout
@@ -62,17 +63,48 @@ jobs:
           command: |
             echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
             docker push "${IMAGE_TAG}"
+  deploy:
+        docker:
+        - image: cimg/node:16.10
+        steps:
+        - setup_remote_docker      
+        - heroku/install
+        - checkout
+        - run:
+            name: Heroku Container Push
+            command: | 
+                heroku container:login
+                heroku container:push web -a shiywsg-su-devops
+                heroku container:release web -a shiywsg-su-devops          
 
 workflows:
-  jobs:
-    - compile:
+  simple_workflow:
+    jobs:
+    - build
+        filters:
+          branchers:
+            only:
+              main
     - test:
         requires:
-          - compile
-      - build:
-      - push:
+          - build
+        filters:
+          branchers:
+            only:
+              main
+    - create
+        tags:
+          only: '*.*.*'
+    - push:
+        requires:
+          - build
+        filters:
+          branches:
+            only: main
+        tags:
+          only: '*.*.*'
+    - deploy:
           requires:
-            - build
-          filters:
-            branches:
-              only: main
+            - push        
+          tags:
+            Only: '*.*.*'
