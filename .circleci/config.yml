@@ -79,7 +79,7 @@ jobs:
                 heroku container:release web -a shiywsg-su-devops          
   scan:
     docker:
-      - image: cimg/node:16.10
+    - image: cimg/node:16.10
       steps:
       - checkout
       - setup_remote_docker
