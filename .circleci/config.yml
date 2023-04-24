@@ -80,6 +80,8 @@ jobs:
   scan:
     docker:
     - image: cimg/node:16.10
+    environment:
+            IMAGE_NAME: shiywsg/sampleci
     steps:
       - checkout
       - setup_remote_docker
