@@ -80,7 +80,7 @@ jobs:
   scan:
     docker:
     - image: cimg/node:16.10
-      steps:
+    steps:
       - checkout
       - setup_remote_docker
       - docker/check
@@ -104,7 +104,7 @@ workflows:
           branches:
             only: main
     - scan: 
-         requires:
+        requires:
           - build
         filters:
           branches:
