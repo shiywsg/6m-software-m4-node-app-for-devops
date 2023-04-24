@@ -1,10 +1,9 @@
-```yml
 version: 2.1
 orbs:
   node: circleci/node@5.1.0
   docker: circleci/docker@2.2.0
   heroku: circleci/heroku@2.0.0
-  executors:
+executors:
   docker-publisher:
     environment:
       IMAGE_TAG: shiywsg/sampleci:latest
@@ -90,18 +89,20 @@ workflows:
         requires:
           - build
     - create:
-        tags:
-          only: '*.*.*'
+        filters:
+          tags:
+            only: '*.*.*'
     - push:
         requires:
           - build
         filters:
           branches:
             only: main
-        tags:
-          only: '*.*.*'
+          tags:
+            only: '*.*.*'
     - deploy:
           requires:
-            - push        
-          tags:
-            Only: '*.*.*'
+            - push   
+          filters:     
+            tags:
+              only: '*.*.*'
